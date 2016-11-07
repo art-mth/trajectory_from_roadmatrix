@@ -1,6 +1,5 @@
 #include "trajectory_from_roadmatrix.h"
 
-#include <math.h>
 #include <vector>
 #include <memory>
 
@@ -26,11 +25,8 @@ void TrajectoryFromRoadmatrix::configsChanged() {
 bool TrajectoryFromRoadmatrix::cycle() {
     trajectory->clear();
 
-    float carWidthMeter = config().get<float>("carWidth", 0.2);
-    int carWidthCells = ceil(carWidthMeter / roadMatrix->cellWidth());
-
     std::unique_ptr<LanePieceMatrix> lanePieceMatrix =
-        impl->createLanePieceMatrix(carWidthCells, *roadMatrix);
+        impl->createLanePieceMatrix(*roadMatrix);
 
     std::unique_ptr<LanePieceTrajectory> lanePieceTrajectory =
         impl->getOptimalLanePieceTrajectory(*lanePieceMatrix);
@@ -40,4 +36,6 @@ bool TrajectoryFromRoadmatrix::cycle() {
     return true;
 }
 
-void TrajectoryFromRoadmatrix::configureImpl() {}
+void TrajectoryFromRoadmatrix::configureImpl() {
+    impl->setCarWidthMeter(config().get<float>("carWidthMeter", 0.2));
+}
