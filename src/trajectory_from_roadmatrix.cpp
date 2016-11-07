@@ -38,4 +38,6 @@ bool TrajectoryFromRoadmatrix::cycle() {
 
 void TrajectoryFromRoadmatrix::configureImpl() {
     impl->setCarWidthMeter(config().get<float>("carWidthMeter", 0.2));
+    impl->setObstacleClearanceMeter(
+        config().get<float>("setObstacleClearanceMeter", 0.5));
 }
