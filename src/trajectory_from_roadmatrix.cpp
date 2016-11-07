@@ -4,21 +4,43 @@
 #include <vector>
 #include <memory>
 
-namespace {
-using road_matrix_to_trajectory::LanePiece;
-using road_matrix_to_trajectory::LanePieceMatrix;
-using road_matrix_to_trajectory::LanePieceTrajectory;
-}
-
 bool TrajectoryFromRoadmatrix::initialize() {
     roadMatrix = readChannel<street_environment::RoadMatrix>("ROADMATRIX");
     trajectory = writeChannel<street_environment::Trajectory>("TRAJECTORY");
+
+    impl = std::unique_ptr<TrajectoryFromRoadmatrixImpl>(
+               new TrajectoryFromRoadmatrixImpl);
+    configureImpl();
+
     return true;
 }
 
 bool TrajectoryFromRoadmatrix::deinitialize() {
     return true;
 }
+
+void TrajectoryFromRoadmatrix::configsChanged() {
+    configureImpl();
+}
+
+bool TrajectoryFromRoadmatrix::cycle() {
+    trajectory->clear();
+
+    float carWidthMeter = config().get<float>("carWidth", 0.2);
+    int carWidthCells = ceil(carWidthMeter / roadMatrix->cellWidth());
+
+    std::unique_ptr<LanePieceMatrix> lanePieceMatrix =
+        impl->createLanePieceMatrix(carWidthCells, *roadMatrix);
+
+    std::unique_ptr<LanePieceTrajectory> lanePieceTrajectory =
+        impl->getOptimalLanePieceTrajectory(*lanePieceMatrix);
+
+    fillTrajectory(*lanePieceTrajectory);
+
+    return true;
+}
+
+void TrajectoryFromRoadmatrix::configureImpl() {}
 
 bool TrajectoryFromRoadmatrix::fillTrajectory(
     const LanePieceTrajectory& lanePieceTrajectory) {
@@ -32,24 +54,5 @@ bool TrajectoryFromRoadmatrix::fillTrajectory(
         tp.position = lms::math::vertex2f(tp_x, tp_y);
         trajectory->push_back(tp);
     }
-    return true;
-}
-
-bool TrajectoryFromRoadmatrix::cycle() {
-    trajectory->clear();
-
-    float carWidthMeter = config().get<float>("carWidth", 0.2);
-    int carWidthCells = ceil(carWidthMeter / roadMatrix->cellWidth());
-
-    std::unique_ptr<LanePieceMatrix> lanePieceMatrix =
-        road_matrix_to_trajectory::createLanePieceMatrix(
-            carWidthCells, *roadMatrix);
-
-    std::unique_ptr<LanePieceTrajectory> lanePieceTrajectory =
-        road_matrix_to_trajectory::getOptimalLanePieceTrajectory(
-            *lanePieceMatrix);
-
-    fillTrajectory(*lanePieceTrajectory);
-
     return true;
 }
