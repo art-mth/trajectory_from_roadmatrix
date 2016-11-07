@@ -35,24 +35,9 @@ bool TrajectoryFromRoadmatrix::cycle() {
     std::unique_ptr<LanePieceTrajectory> lanePieceTrajectory =
         impl->getOptimalLanePieceTrajectory(*lanePieceMatrix);
 
-    fillTrajectory(*lanePieceTrajectory);
+    impl->fillTrajectory(*lanePieceTrajectory, *trajectory);
 
     return true;
 }
 
 void TrajectoryFromRoadmatrix::configureImpl() {}
-
-bool TrajectoryFromRoadmatrix::fillTrajectory(
-    const LanePieceTrajectory& lanePieceTrajectory) {
-    street_environment::TrajectoryPoint tp;
-    tp.velocity = 1;
-    for (const auto& piece : lanePieceTrajectory) {
-        float tp_x = (piece.cells.front().points[1].x +
-                      piece.cells.back().points[2].x) / 2;
-        float tp_y = (piece.cells.front().points[1].y +
-                      piece.cells.back().points[2].y) / 2;
-        tp.position = lms::math::vertex2f(tp_x, tp_y);
-        trajectory->push_back(tp);
-    }
-    return true;
-}

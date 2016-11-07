@@ -24,7 +24,6 @@ class TrajectoryFromRoadmatrix : public lms::Module {
     std::unique_ptr<TrajectoryFromRoadmatrixImpl> impl;
 
     void configureImpl();
-    bool fillTrajectory(const LanePieceTrajectory& lanePieceTrajectory);
 };
 
 #endif // TRAJECTORY_FROM_ROADMATRIX_H
