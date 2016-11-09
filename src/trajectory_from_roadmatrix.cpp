@@ -23,15 +23,20 @@ void TrajectoryFromRoadmatrix::configsChanged() {
 }
 
 bool TrajectoryFromRoadmatrix::cycle() {
+    logger.error("1");
     trajectory->clear();
+    logger.error("2");
 
     std::unique_ptr<LanePieceMatrix> lanePieceMatrix =
         impl->createLanePieceMatrix(*roadMatrix);
+    logger.error("3");
 
     std::unique_ptr<LanePieceTrajectory> lanePieceTrajectory =
         impl->getOptimalLanePieceTrajectory(*lanePieceMatrix);
+    logger.error("4");
 
     impl->fillTrajectory(*lanePieceTrajectory, *trajectory);
+    logger.error("5");
 
     return true;
 }

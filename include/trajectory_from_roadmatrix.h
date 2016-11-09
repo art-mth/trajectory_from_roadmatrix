@@ -1,10 +1,8 @@
 #ifndef TRAJECTORY_FROM_ROADMATRIX_H
 #define TRAJECTORY_FROM_ROADMATRIX_H
-
-#include <street_environment/road_matrix/trajectory_from_roadmatrix_impl.h>
-
 #include <lms/module.h>
 #include <street_environment/road_matrix/road_matrix.h>
+#include <street_environment/road_matrix/trajectory_from_roadmatrix_impl.h>
 #include <street_environment/trajectory.h>
 
 /**
