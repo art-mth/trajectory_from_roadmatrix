@@ -19,6 +19,8 @@ bool TrajectoryFromRoadmatrix::deinitialize() { return true; }
 void TrajectoryFromRoadmatrix::configsChanged() { configureImpl(); }
 
 bool TrajectoryFromRoadmatrix::cycle() {
+    impl->calculateCycleConstants(*roadMatrix);
+
     trajectory->clear();
 
     std::unique_ptr<LanePieceMatrix> lanePieceMatrix =
