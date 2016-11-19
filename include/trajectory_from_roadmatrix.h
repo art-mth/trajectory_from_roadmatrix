@@ -17,7 +17,7 @@ class TrajectoryFromRoadmatrix : public lms::Module {
     bool cycle() override;
 
    private:
-    lms::ReadDataChannel<street_environment::RoadMatrix> roadMatrix;
+    lms::ReadDataChannel<street_environment::RoadMatrix> roadmatrix;
     lms::WriteDataChannel<street_environment::Trajectory> trajectory;
 
     std::unique_ptr<TrajectoryFromRoadmatrixImpl> impl;
