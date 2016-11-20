@@ -2,12 +2,12 @@
 
 #include <vector>
 
-#include "gmock/gmock.h"
-#include "gtest/gtest.h"
-#include "lms/math/polyline.h"
-#include "street_environment/obstacle.h"
-#include "street_environment/roadmatrix.h"
-#include "street_environment/street_environment.h"
+#include <gmock/gmock.h>
+#include <gtest/gtest.h>
+#include <lms/math/polyline.h>
+#include <street_environment/obstacle.h>
+#include <street_environment/roadmatrix.h>
+#include <street_environment/street_environment.h>
 
 using lms::math::polyLine2f;
 using lms::math::vertex2f;
@@ -16,9 +16,13 @@ using street_environment::EnvironmentObjectPtr;
 
 class TrajectoryFromRoadMatrixTest : public testing::Test {
    public:
-    TrajectoryFromRoadMatrixTest() : lineLength(20), laneWidth(0.4),
-        cellsPerLane(4), cellLength(0.1), carWidthMeter(0.2),
-        obstacleClearanceMeter(0.5) {
+    TrajectoryFromRoadMatrixTest()
+        : lineLength(20),
+          laneWidth(0.4),
+          cellsPerLane(4),
+          cellLength(0.1),
+          carWidthMeter(0.2),
+          obstacleClearanceMeter(0.5) {
         polyLine2f straightLine;
         const int lineLength = 20;
         for (int i = 0; i < lineLength; i++) {

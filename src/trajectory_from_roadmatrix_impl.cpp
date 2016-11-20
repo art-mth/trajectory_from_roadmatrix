@@ -3,7 +3,7 @@
 #include <math.h>
 #include <stdlib.h>
 
-#include "lms/math/vertex.h"
+#include <lms/math/vertex.h>
 
 namespace {
 const int kLaneValueStep = 1;
