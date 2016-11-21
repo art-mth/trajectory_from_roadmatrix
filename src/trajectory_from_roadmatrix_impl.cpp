@@ -64,20 +64,20 @@ TrajectoryFromRoadmatrixImpl::getOptimalLanePieceTrajectory(
     std::unique_ptr<LanePieceTrajectory> cellLane(new LanePieceTrajectory);
     for (const auto& pieces : lanePieceMatrix) {
         if (pieces.size() > 0) {
-            const LanePiece* a = &pieces[0];
+            const LanePiece* bestPiece = &pieces[0];
             for (const auto& piece : pieces) {
-                if (piece.value > a->value) {
-                    a = &piece;
+                if (piece.value > bestPiece->value) {
+                    bestPiece = &piece;
                 }
             }
             // The road is blocked. No need to calculate the trajectory any
             // further.
-            if (a->value <= m_maxLanePieceValue * m_carWidthCells) {
-                cellLane->push_back(*a);
+            if (bestPiece->value < m_maxLanePieceValue * m_carWidthCells) {
+                cellLane->push_back(*bestPiece);
                 cellLane->back().stop = true;
                 return cellLane;
             }
-            cellLane->push_back(*a);
+            cellLane->push_back(*bestPiece);
         }
     }
     return cellLane;
