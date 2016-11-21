@@ -11,7 +11,7 @@ set(HEADERS
 
 include_directories(include)
 add_library(trajectory_from_roadmatrix SHARED ${SOURCES} ${HEADERS})
-target_link_libraries(trajectory_from_roadmatrix PRIVATE lmscore street_environment)
+target_link_libraries(trajectory_from_roadmatrix PRIVATE lmscore lms_math street_environment)
 
 if(LOCAL_GMOCK)
 set(TESTS
