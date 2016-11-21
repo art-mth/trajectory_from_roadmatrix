@@ -37,7 +37,6 @@ class TrajectoryFromRoadMatrixTest : public testing::Test {
           obstacleClearanceLeftBackMeter(0.5),
           obstacleClearanceRightBackMeter(0.5) {
         polyLine2f straightLine;
-        const int lineLength = 20;
         for (int i = 0; i < lineLength; i++) {
             straightLine.points().push_back(vertex2f(i * 0.1, 0.2));
         }
