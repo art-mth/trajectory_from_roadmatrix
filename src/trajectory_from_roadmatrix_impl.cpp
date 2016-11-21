@@ -113,7 +113,7 @@ int TrajectoryFromRoadmatrixImpl::valueFunction(
         m_maxCellValue - (abs(m_perfectTrajectory - cell.y) * kLaneValueStep);
 
     if (cell.hasObstacle) {
-        value = -m_maxLanePieceValue - 1;
+        value = -m_maxLanePieceValue * m_carWidthCells;
         return value;
     }
 
