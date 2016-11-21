@@ -113,38 +113,47 @@ int TrajectoryFromRoadmatrixImpl::valueFunction(
         m_maxCellValue - (abs(m_perfectTrajectory - cell.y) * kLaneValueStep);
 
     if (cell.hasObstacle) {
-        value = -m_maxLanePieceValue * m_carWidthCells;
+        return value - (m_maxLanePieceValue * m_carWidthCells);
+    }
+
+    if (obstacleInClearanceArea(cell, roadMatrix)) {
         return value;
     }
 
-    if (cell.y < m_perfectTrajectory - m_carWidthCells/2) {
+    value += m_maxLanePieceValue;
+    return value;
+}
+
+bool TrajectoryFromRoadmatrixImpl::obstacleInClearanceArea(
+    const street_environment::RoadMatrixCell& cell,
+    const street_environment::RoadMatrix& roadMatrix) const {
+    if (cell.y < m_perfectTrajectory - m_carWidthCells / 2) {
         for (int x = 1; x <= m_obstacleClearanceLeftFrontCells; x++) {
             if ((cell.x + x < roadMatrix.length()) &&
                 (roadMatrix.cell(cell.x + x, cell.y).hasObstacle)) {
-                return value;
+                return true;
             }
         }
         for (int x = 1; x <= m_obstacleClearanceLeftBackCells; x++) {
             if ((cell.x - x >= 0) &&
                 (roadMatrix.cell(cell.x - x, cell.y).hasObstacle)) {
-                return value;
+                return true;
             }
         }
     } else {
         for (int x = 1; x <= m_obstacleClearanceRightFrontCells; x++) {
             if ((cell.x + x < roadMatrix.length()) &&
                 (roadMatrix.cell(cell.x + x, cell.y).hasObstacle)) {
-                return value;
+                return true;
             }
         }
         for (int x = 1; x <= m_obstacleClearanceRightBackCells; x++) {
             if ((cell.x - x >= 0) &&
                 (roadMatrix.cell(cell.x - x, cell.y).hasObstacle)) {
-                return value;
+                return true;
             }
         }
     }
 
-    value += m_maxLanePieceValue;
-    return value;
+    return false;
 }

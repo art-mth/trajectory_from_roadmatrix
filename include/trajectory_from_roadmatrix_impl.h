@@ -32,6 +32,10 @@ struct TrajectoryFromRoadmatrixImpl {
     int valueFunction(const street_environment::RoadMatrixCell& cell,
                       const street_environment::RoadMatrix& roadMatrix) const;
 
+    bool obstacleInClearanceArea(
+        const street_environment::RoadMatrixCell& cell,
+        const street_environment::RoadMatrix& roadMatrix) const;
+
     void setCarWidthMeter(float carWidthMeter) {
         m_carWidthMeter = carWidthMeter;
     }
