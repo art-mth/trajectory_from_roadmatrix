@@ -40,22 +40,19 @@ TrajectoryFromRoadmatrixImpl::createLanePieceMatrix(
             int value = 0;
             LanePiece lanePiece;
             for (int i = 0; i < m_carWidthCells; i++) {
-                const street_environment::RoadMatrixCell& cell =
-                    roadMatrix.cell(x, y + i);
+                const auto& cell = roadMatrix.cell(x, y + i);
                 value += valueFunction(cell, roadMatrix);
                 lanePiece.cells.push_back(cell);
             }
 
-            // TODO(arthurmathies) This needs some rethinking. Maybe there is a
-            // simpler way:
-            // Scale the whole lane piece back down so that lane pieces that are
+            // Scale the whole lane piece down so that lane pieces that are
             // partially blocked and fully blocked are comparable.
             if (value < m_carWidthCells * m_maxLanePieceValue) {
                 int free_cells = value / m_maxLanePieceValue;
                 value -= free_cells * m_maxLanePieceValue;
             }
             lanePiece.value = value;
-            lanePieceMatrix->at(x).push_back(lanePiece);
+            lanePieceMatrix->at(x).at(y) = lanePiece;
         }
     }
     return lanePieceMatrix;
