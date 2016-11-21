@@ -4,8 +4,8 @@
 #include <memory>
 #include <vector>
 
-#include "street_environment/roadmatrix.h"
-#include "street_environment/trajectory.h"
+#include <street_environment/roadmatrix.h>
+#include <street_environment/trajectory.h>
 
 struct LanePiece {
     std::vector<street_environment::RoadMatrixCell> cells;
