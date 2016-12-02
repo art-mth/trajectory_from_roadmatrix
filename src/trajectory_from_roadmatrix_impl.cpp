@@ -7,7 +7,7 @@
 
 namespace {
 const int kLaneValueStep = 1;
-const float kPerfectTrajectoryFactor = 0.75;
+const float kPerfectTrajectoryFactor = 0.25;
 const lms::math::vertex2f kCarPosition = lms::math::vertex2f(0, 0);
 }
 

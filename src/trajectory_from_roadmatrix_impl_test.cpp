@@ -15,14 +15,11 @@
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 #include <lms/math/polyline.h>
-#include <street_environment/obstacle.h>
 #include <street_environment/roadmatrix.h>
-#include <street_environment/street_environment.h>
 
 using lms::math::polyLine2f;
 using lms::math::vertex2f;
 using street_environment::RoadMatrix;
-using street_environment::EnvironmentObjectPtr;
 
 class TrajectoryFromRoadMatrixTest : public testing::Test {
    public:
@@ -67,36 +64,35 @@ class TrajectoryFromRoadMatrixTest : public testing::Test {
 };
 
 TEST_F(TrajectoryFromRoadMatrixTest, createLanePieceMatrixValuesScaled) {
-    std::vector<EnvironmentObjectPtr> obstacles;
-    street_environment::ObstaclePtr obst1(new street_environment::Obstacle());
-    obst1->addPoint(lms::math::vertex2f(0.55, 0.05));
-    obst1->addPoint(lms::math::vertex2f(0.55, -0.05));
-    obstacles.push_back(obst1);
+    {
+        std::unique_ptr<LanePieceMatrix> lanePieceMatrix =
+            trajectory_creator.createLanePieceMatrix(roadMatrix);
+        EXPECT_GT(lanePieceMatrix->at(4).at(2).value, lanePieceMatrix->at(4).at(3).value);
+        EXPECT_GE(lanePieceMatrix->at(4).at(1).value, lanePieceMatrix->at(4).at(2).value);
+        EXPECT_LT(lanePieceMatrix->at(4).at(0).value, lanePieceMatrix->at(4).at(1).value);
+    }
+    {
+        roadMatrix.cell(4, 2).hasObstacle = true;
+        std::unique_ptr<LanePieceMatrix> lanePieceMatrix =
+            trajectory_creator.createLanePieceMatrix(roadMatrix);
 
-    roadMatrix.markEnvironmentObjects(obstacles);
+        EXPECT_LT(lanePieceMatrix->at(4).at(2).value, lanePieceMatrix->at(4).at(3).value);
+        EXPECT_GE(lanePieceMatrix->at(4).at(1).value, lanePieceMatrix->at(4).at(2).value);
+        EXPECT_GT(lanePieceMatrix->at(4).at(0).value, lanePieceMatrix->at(4).at(1).value);
+    }
 
-    std::unique_ptr<LanePieceMatrix> lanePieceMatrix =
-        trajectory_creator.createLanePieceMatrix(roadMatrix);
-    EXPECT_GT(lanePieceMatrix->at(4).at(5).value, lanePieceMatrix->at(4).at(4).value);
-    EXPECT_GE(lanePieceMatrix->at(4).at(5).value, lanePieceMatrix->at(4).at(6).value);
-    EXPECT_LT(lanePieceMatrix->at(4).at(5).value, lanePieceMatrix->at(4).at(3).value);
+
 }
 
 TEST_F(TrajectoryFromRoadMatrixTest, getOptimalLanePieceTrajectoryBlockedRoad) {
-    std::vector<EnvironmentObjectPtr> obstacles;
-
-    street_environment::ObstaclePtr obst1(new street_environment::Obstacle());
-    obst1->addPoint(lms::math::vertex2f(0.7, -0.15));
-    obst1->addPoint(lms::math::vertex2f(0.7, -0.05));
-    obst1->addPoint(lms::math::vertex2f(0.7, 0.05));
-    obst1->addPoint(lms::math::vertex2f(0.7, 0.15));
-    obst1->addPoint(lms::math::vertex2f(0.7, 0.25));
-    obst1->addPoint(lms::math::vertex2f(0.7, 0.35));
-    obst1->addPoint(lms::math::vertex2f(0.7, 0.45));
-    obst1->addPoint(lms::math::vertex2f(0.7, 0.55));
-    obstacles.push_back(obst1);
-
-    roadMatrix.markEnvironmentObjects(obstacles);
+    roadMatrix.cell(7, 0).hasObstacle = true;
+    roadMatrix.cell(7, 1).hasObstacle = true;
+    roadMatrix.cell(7, 2).hasObstacle = true;
+    roadMatrix.cell(7, 3).hasObstacle = true;
+    roadMatrix.cell(7, 4).hasObstacle = true;
+    roadMatrix.cell(7, 5).hasObstacle = true;
+    roadMatrix.cell(7, 6).hasObstacle = true;
+    roadMatrix.cell(7, 7).hasObstacle = true;
 
     std::unique_ptr<LanePieceMatrix> lanePieceMatrix =
         trajectory_creator.createLanePieceMatrix(roadMatrix);
@@ -104,6 +100,6 @@ TEST_F(TrajectoryFromRoadMatrixTest, getOptimalLanePieceTrajectoryBlockedRoad) {
     std::unique_ptr<LanePieceTrajectory> lanePieceTrajectory =
         trajectory_creator.getOptimalLanePieceTrajectory(*lanePieceMatrix);
 
-    EXPECT_EQ(lanePieceTrajectory->size(), 2);
+    EXPECT_EQ(lanePieceTrajectory->size(), 3);
     EXPECT_EQ(lanePieceTrajectory->back().stop, true);
 }
