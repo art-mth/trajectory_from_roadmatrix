@@ -28,6 +28,7 @@ class TrajectoryFromRoadMatrixTest : public testing::Test {
           laneWidth(0.4),
           cellsPerLane(4),
           cellLength(0.1),
+          maxTranslation(5),
           carWidthMeter(0.2),
           obstacleClearanceLeftFrontMeter(1.0),
           obstacleClearanceRightFrontMeter(0.5),
@@ -38,8 +39,8 @@ class TrajectoryFromRoadMatrixTest : public testing::Test {
             straightLine.points().push_back(vertex2f(i * 0.1, 0.2));
         }
 
-        roadMatrix.aroundLine(straightLine, laneWidth, cellsPerLane,
-                              cellLength);
+        roadMatrix.initialize(laneWidth, cellsPerLane, cellLength, maxTranslation);
+        roadMatrix.aroundLine(straightLine, vertex2f(0, 0), 0);
 
         trajectory_creator.setCarWidthMeter(carWidthMeter);
         trajectory_creator.setObstacleClearanceLeftFrontMeter(obstacleClearanceLeftFrontMeter);
@@ -56,6 +57,7 @@ class TrajectoryFromRoadMatrixTest : public testing::Test {
     const float laneWidth;
     const int cellsPerLane;
     const float cellLength;
+    const int maxTranslation;
     const float carWidthMeter;
     const float obstacleClearanceLeftFrontMeter;
     const float obstacleClearanceRightFrontMeter;
