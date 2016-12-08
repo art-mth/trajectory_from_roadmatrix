@@ -34,13 +34,14 @@ std::unique_ptr<LanePieceMatrix>
 TrajectoryFromRoadmatrixImpl::createLanePieceMatrix(
     const street_environment::RoadMatrix& roadMatrix) const {
     std::unique_ptr<LanePieceMatrix> lanePieceMatrix(new LanePieceMatrix(
-        roadMatrix.length(), std::vector<LanePiece>(m_numLanes)));
-    for (int x = 0; x < roadMatrix.length(); x++) {
+        roadMatrix.lengthAhead(), std::vector<LanePiece>(m_numLanes)));
+    for (int x = 0; x < roadMatrix.lengthAhead(); x++) {
         for (int y = 0; y < m_numLanes; y++) {
             int value = 0;
             LanePiece lanePiece;
             for (int i = 0; i < m_carWidthCells; i++) {
-                const auto& cell = roadMatrix.cell(x, y + i);
+                const auto& cell =
+                    roadMatrix.cell(x + roadMatrix.zeroColumn(), y + i);
                 value += valueFunction(cell, roadMatrix);
                 lanePiece.cells.push_back(cell);
             }
