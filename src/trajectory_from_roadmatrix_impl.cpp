@@ -97,9 +97,15 @@ bool TrajectoryFromRoadmatrixImpl::fillTrajectory(
         if (piece.stop) {
             curTp.velocity = 0;
         } else {
-            curTp.velocity = 1;
+            curTp.velocity = 2;
         }
-        curTp.directory = (curTp.position - prevTp.position).normalize();
+        // If we want direction vectors that are on par with the trajectory.
+        // curTp.directory = (curTp.position - prevTp.position).normalize();
+        // Here we use the road matrix cell points to get a direction vector
+        // that is parralel to the center line.
+        curTp.directory =
+            (piece.cells.front().points[0] - piece.cells.front().points[1])
+                .normalize();
         trajectory.push_back(curTp);
         prevTp = curTp;
     }
